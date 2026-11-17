@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Катины тренировки</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Nunito:wght@400;600;800&display=swap">
+<style>
+:root{
+  --bg:#e8f6f8; --surface:#ffffff; --water:#bfe7ee; --ink:#11324a; --muted:#4f6b7d;
+  --accent:#ff6b4a; --accent-ink:#ffffff; --lane:#ffc531; --done:#1f9d74; --line:#cfe3e8;
+  --tbg:#11324a; --tfg:#e8f6f8; --tbtn:#e8f6f8; --tbtn-ink:#11324a;
+  --display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --body:"Nunito","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#0c1f2c; --surface:#132c3c; --water:#17435a; --ink:#e6f4f8; --muted:#9db8c6;
+  --accent:#ff8366; --accent-ink:#1b0e09; --lane:#ffd257; --done:#3cc596; --line:#244657;
+  --tbg:#1d4a62; --tfg:#ffffff; --tbtn:#0c1f2c; --tbtn-ink:#e6f4f8; color-scheme:dark}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45}
+.wrap{max-width:640px;margin:0 auto;padding:16px 12px 48px;display:flex;flex-direction:column;gap:18px}
+h1,h2{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(24px,6.5vw,36px);font-weight:800}
+h2{font-size:17px;font-weight:600}
+p{margin:0}
+.hero{background:var(--water);border-radius:20px;padding:18px 16px;display:flex;flex-direction:column;gap:8px}
+.rope{height:7px;border-radius:4px;background:repeating-linear-gradient(90deg,var(--lane) 0 14px,var(--accent) 14px 28px)}
+.eyebrow{font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+details.rule{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:10px 14px}
+details.rule summary{font-weight:800;color:var(--accent);cursor:pointer}
+details.rule p{margin-top:6px}
+.days{display:grid;grid-template-columns:repeat(auto-fit,minmax(6.5em,1fr));gap:8px}
+.day{font:inherit;font-weight:800;font-size:clamp(13px,3.8vw,16px);overflow-wrap:anywhere;hyphens:auto;border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;padding:8px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0}
+.day small{font-weight:600;color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
+.day[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.day[aria-pressed="true"] small{color:var(--accent-ink)}
+.day.full small::after{content:" ★"}
+.bar{height:12px;background:var(--water);border-radius:6px;overflow:hidden}
+.bar span{display:block;height:100%;width:0;background:var(--done);border-radius:6px;transition:width .3s}
+.progress{display:flex;flex-direction:column;gap:5px}
+.progress p{font-weight:700;font-variant-numeric:tabular-nums}
+section{display:flex;flex-direction:column;gap:8px}
+.sub{color:var(--muted);font-size:14px}
+.list{display:flex;flex-direction:column;gap:6px}
+.ex{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:6px 8px 6px 10px;display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}
+.ex.is-done{border-color:var(--done)}
+.num{font-family:var(--display);font-weight:800;color:var(--accent);font-size:15px;flex:none;min-width:1.4em}
+.ex > details,.ex > .ttl{flex:1 1 4.5em;min-width:0}
+.ttl{font-weight:800}
+.ex summary{font-weight:800;cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px;min-height:40px;line-height:1.2;overflow-wrap:anywhere;hyphens:auto}
+.ex summary::-webkit-details-marker{display:none}
+.ex summary::after{content:"";width:7px;height:7px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg) translateY(-2px);flex:none;transition:transform .2s}
+.ex details[open] summary::after{transform:rotate(-135deg) translateY(-2px)}
+.how{flex:1 1 100%;min-width:0;font-size:14px;padding:2px 0 6px 2em}
+.how ul{margin:4px 0 0;padding-left:1.1em}
+.checks{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end}
+.chk{position:relative}
+.chk input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer;width:100%;height:100%}
+.chk label{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;min-height:44px;border-radius:12px;border:2px solid var(--line);font-weight:800;font-size:14px;cursor:pointer;user-select:none;white-space:nowrap}
+.chk label::before{content:"";width:18px;height:18px;border-radius:5px;border:2px solid var(--muted);flex:none}
+.chk input:checked + label{background:var(--done);border-color:var(--done);color:#fff}
+.chk input:checked + label::before{border-color:#fff;background:#fff;box-shadow:inset 0 0 0 3px var(--done)}
+.chk.round label{flex-direction:column;justify-content:center;gap:0;width:3.4em;padding:3px 4px;line-height:1;font-size:18px}
+.chk.round label small{font-size:11px;font-weight:700;color:var(--muted)}
+.chk.round label::before{display:none}
+.chk.round input:checked + label small{color:#fff}
+.chk.saving label{opacity:.6}
+.chk input:focus-visible + label{outline:3px solid var(--accent);outline-offset:2px}
+.timer{position:sticky;top:6px;z-index:5;background:var(--tbg);color:var(--tfg);border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:8px;box-shadow:0 6px 16px rgba(17,50,74,.18)}
+.timer.ding{animation:ding .5s 3}
+@keyframes ding{50%{background:var(--accent)}}
+.tline{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 10px}
+.big{font-family:var(--display);font-size:clamp(28px,9vw,38px);font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.phase{font-weight:800;font-size:16px;text-align:right}
+.tbtns{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+.tbtns button{font:inherit;font-weight:800;border:0;border-radius:10px;cursor:pointer;min-height:44px;background:var(--tbtn);color:var(--tbtn-ink);font-size:14px;line-height:1.1;padding:4px 2px;overflow-wrap:anywhere}
+.tbtns button.stop{background:var(--accent);color:var(--accent-ink)}
+.tbtns button[aria-pressed="true"]{background:var(--lane);color:#11324a}
+button:focus-visible{outline:3px solid var(--lane);outline-offset:2px}
+.win{background:var(--lane);color:#11324a;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:4px;text-align:center}
+.win h2{font-size:20px}
+.state{padding:40px 0;text-align:center;color:var(--muted);font-weight:700}
+.toast{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:700;z-index:20;max-width:calc(100% - 32px);text-align:center}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <p class="state" id="loading">Загружаю тренировки…</p>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+var BLOCKS = [
+  {name:'Разминка', title:'Шаг 1. Разминка · 5 мин'},
+  {name:'Главная',  title:'Шаг 2. Главная часть'},
+  {name:'Заминка',  title:'Шаг 3. Заминка · 5 мин', hint:'Каждое держи, пока медленно считаешь до 20. Тянуть должно приятно, а не больно.'},
+  {name:'Прогулки', title:'Прогулки · 20–30 мин'}
+];
+var data = null, day = 1, inputs = [];
+
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function toast(t){var el=document.getElementById('toast');el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){el.hidden=true},3500)}
+function fmtDate(s){var m=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];var p=s.split('-');return (+p[2])+' '+m[+p[1]-1]}
+
+/* Адрес скрипта Google (веб-приложение). Вставляется один раз. */
+var API = 'https://script.google.com/macros/s/AKfycbxZBjKyzmaI3lS6ZtEtFEPKn93pF9y1aGLT96byuO6BzmjcofNytgqFfpncGysfOaG-DQ/exec';
+
+function api(method, body){
+  var opt={method:method,credentials:'omit',redirect:'follow'};
+  if(body){opt.headers={'Content-Type':'text/plain;charset=utf-8'};opt.body=JSON.stringify(body)}
+  var url=method==='GET'?API+'?action=data&t='+Date.now():API;
+  return fetch(url,opt).then(function(r){if(!r.ok)throw new Error('ответ '+r.status);return r.json()})
+    .then(function(j){if(!j.ok)throw new Error(j.error||'ошибка');return j.data});
+}
+
+function load(first){
+  api('GET').then(function(d){
+    var weekChanged = !data || data.week.n !== d.week.n;
+    data = d;
+    if (first || weekChanged) build(); else refresh();
+  }).catch(function(e){
+    if (first) document.getElementById('loading').textContent='Не получилось загрузить ('+e.message+'). Проверь интернет и обнови страницу.';
+    else toast('Нет связи с таблицей');
+  });
+}
+
+function key(training,id,j){return training+'|'+id+'|'+j}
+
+function build(){
+  var w=data.week, app=document.getElementById('app');
+  try{var saved=+localStorage.getItem('katya-day-w'+w.n);if(saved>=1&&saved<=w.days.length)day=saved;else day=1}catch(e){day=1}
+  var html='';
+  html+='<header class="hero"><div class="rope"></div><p class="eyebrow">Неделя '+w.n+' · с '+fmtDate(w.start)+'</p>'+
+    '<h1>'+(w.title?esc(w.title):'Катя, вперёд!')+'</h1>'+
+    '<p>Тренировки: '+w.days.map(function(d){return d.toLowerCase()}).join(', ')+'. Ставь галочку после каждого упражнения.</p></header>';
+  html+='<details class="rule"><summary>Главное правило</summary><p>Во время упражнений ты должна спокойно разговаривать. Не получается — сбавь темп.</p><p>Если что-то болит или кружится голова — остановись и скажи взрослому.</p></details>';
+  html+='<nav class="days" id="days">'+w.days.map(function(d,i){return '<button type="button" class="day" data-day="'+(i+1)+'">'+esc(d)+'<small></small></button>'}).join('')+'</nav>';
+  html+='<div class="progress"><p id="ptext"></p><div class="bar"><span id="pbar"></span></div></div>';
+  html+='<div class="win" id="win" hidden><h2>Тренировка пройдена! 🎉</h2><p id="wintext"></p></div>';
+  BLOCKS.forEach(function(b){
+    var items=data.items.filter(function(it){return it.block===b.name});
+    if(b.name==='Прогулки' && !items.length && w.walks.length){
+      items=w.walks.map(function(d,i){return {block:'Прогулки',id:'walk'+i,title:d,text:'',options:[],labels:['Была']}});
+    }
+    if(!items.length)return;
+    html+='<section><h2>'+(b.name==='Главная'&&w.hint?esc(b.title):esc(b.title))+'</h2>';
+    var hint=b.name==='Главная'?w.hint:b.hint;
+    if(hint)html+='<p class="sub">'+esc(hint)+'</p>';
+    if(b.name==='Главная')html+=timerHtml(w);
+    html+='<div class="list">';
+    items.forEach(function(it,i){
+      var num=b.name==='Разминка'?'✓':b.name==='Прогулки'?'🚶':(i+1);
+      var training=b.name==='Прогулки'?'W':null;
+      html+='<div class="ex" data-row><span class="num">'+num+'</span>';
+      if(it.text||it.options.length){
+        html+='<details><summary>'+esc(it.title)+'</summary></details>';
+      }else html+='<div class="ttl">'+esc(it.title)+'</div>';
+      html+='<div class="checks">'+it.labels.map(function(lab,j){
+        var round=/^\d$/.test(lab);
+        return '<div class="chk'+(round?' round':'')+'"><input type="checkbox" id="cb-'+esc(it.id)+'-'+j+'" data-id="'+esc(it.id)+'" data-j="'+j+'" data-walk="'+(training?'1':'')+'"'+(round?' aria-label="Круг '+lab+'"':'')+'>'+
+          '<label for="cb-'+esc(it.id)+'-'+j+'">'+(round?'<small>круг</small>'+lab:esc(lab))+'</label></div>'
+      }).join('')+'</div>';
+      if(it.text||it.options.length){
+        html+='<div class="how" hidden><p>'+esc(it.text)+'</p>'+(it.options.length?'<ul>'+it.options.map(function(o){return '<li>'+esc(o)+'</li>'}).join('')+'</ul>':'')+'</div>';
+      }
+      html+='</div>';
+    });
+    html+='</div></section>';
+  });
+  html+='<p class="sub">'+(w.prize?'За все тренировки недели — сюрприз! Спроси у взрослых 😉':'')+'</p>';
+  app.innerHTML=html;
+
+  app.querySelectorAll('.ex').forEach(function(r){
+    var d=r.querySelector('details'),how=r.querySelector('.how');
+    if(d&&how)d.addEventListener('toggle',function(){how.hidden=!d.open});
+  });
+  inputs=[].slice.call(app.querySelectorAll('.chk input'));
+  inputs.forEach(function(inp){inp.addEventListener('change',function(){save(inp)})});
+  app.querySelectorAll('.day').forEach(function(b){b.onclick=function(){day=+b.dataset.day;try{localStorage.setItem('katya-day-w'+w.n,day)}catch(e){}refresh()}});
+  setupTimer(w);
+  refresh();
+}
+
+function trainingOf(inp){return inp.dataset.walk?'W':String(day)}
+
+function refresh(){
+  var w=data.week;
+  inputs.forEach(function(inp){inp.checked=!!data.marks[key(trainingOf(inp),inp.dataset.id,inp.dataset.j)]});
+  document.querySelectorAll('.ex').forEach(function(r){var ins=[].slice.call(r.querySelectorAll('input'));r.classList.toggle('is-done',ins.length>0&&ins.every(function(x){return x.checked}))});
+  var dayInputs=inputs.filter(function(i){return !i.dataset.walk}), total=dayInputs.length;
+  function count(n){return dayInputs.filter(function(i){return data.marks[key(String(n),i.dataset.id,i.dataset.j)]}).length}
+  document.querySelectorAll('.day').forEach(function(b){var n=+b.dataset.day,k=count(n);b.setAttribute('aria-pressed',String(n===day));b.classList.toggle('full',k===total&&total>0);b.querySelector('small').textContent=k+' / '+total});
+  var k=count(day);
+  document.getElementById('ptext').textContent=w.days[day-1]+': сделано '+k+' из '+total;
+  document.getElementById('pbar').style.width=(total?k/total*100:0)+'%';
+  var left=w.days.filter(function(_,i){return count(i+1)<total}).length;
+  var win=document.getElementById('win');
+  var wasHidden=win.hidden;
+  win.hidden=!(total&&k===total);
+  document.getElementById('wintext').textContent=left===0?(w.prize?w.prize:'Все тренировки недели сделаны! Ты молодец!'):'Отличная работа, Катя! Осталось тренировок: '+left+'.';
+  if(wasHidden&&!win.hidden&&refresh.byClick)win.scrollIntoView({block:'center'});
+  refresh.byClick=false;
+}
+
+function save(inp){
+  var training=trainingOf(inp),id=inp.dataset.id,j=inp.dataset.j,val=inp.checked,k=key(training,id,j);
+  if(val)data.marks[k]=true;else delete data.marks[k];
+  refresh.byClick=true;refresh();
+  var box=inp.parentNode;box.classList.add('saving');
+  api('POST',{action:'mark',week:data.week.n,training:training,id:id,j:Number(j),value:val})
+    .then(function(){box.classList.remove('saving')})
+    .catch(function(){
+      box.classList.remove('saving');
+      if(val)delete data.marks[k];else data.marks[k]=true;
+      refresh();toast('Не сохранилось. Проверь интернет и нажми ещё раз.');
+    });
+}
+
+/* Таймер */
+var ac=null,t=null,endAt=0,lastLeft=null;
+function timerHtml(w){
+  var secs=w.timer.length?w.timer:[20,40,120];
+  var names=w.timerNames.length?w.timerNames:['Работа','Отдых','Отдых между кругами'];
+  function lab(s){return s>=60?(s/60)+' мин':s+' с'}
+  return '<div class="timer" id="timer" aria-live="polite"><div class="tline"><div class="big" id="tnum">'+fmt(secs[0])+'</div><div class="phase" id="tphase">Нажми кнопку</div></div>'+
+    '<div class="tbtns">'+secs.slice(0,3).map(function(s,i){var nm=names[i]||'Таймер';return '<button type="button" data-sec="'+s+'" data-name="'+esc(nm)+'">'+esc(nm.split(' ')[0])+'<br>'+lab(s)+'</button>'}).join('')+
+    '<button type="button" class="stop" id="tstop">Стоп</button></div></div>';
+}
+function fmt(s){return Math.floor(s/60)+':'+('0'+(s%60)).slice(-2)}
+function unlock(){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume();var o=ac.createOscillator(),g=ac.createGain();g.gain.value=0.0001;o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+0.05)}catch(e){}}
+function tone(f,st,dur,vol){if(!ac)return;var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.connect(g);g.connect(ac.destination);var t0=ac.currentTime+st;g.gain.setValueAtTime(0.0001,t0);g.gain.exponentialRampToValueAtTime(vol,t0+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);o.start(t0);o.stop(t0+dur+0.05)}
+function setupTimer(w){
+  var el=document.getElementById('timer');if(!el)return;
+  var tnum=document.getElementById('tnum'),tphase=document.getElementById('tphase');
+  var btns=[].slice.call(el.querySelectorAll('button[data-sec]'));
+  function stop(){clearInterval(t);t=null;btns.forEach(function(x){x.setAttribute('aria-pressed','false')})}
+  btns.forEach(function(b){b.onclick=function(){
+    unlock();stop();b.setAttribute('aria-pressed','true');
+    var sec=+b.dataset.sec;endAt=Date.now()+sec*1000;lastLeft=sec;tphase.textContent=b.dataset.name;tnum.textContent=fmt(sec);
+    t=setInterval(function(){
+      var left=Math.max(0,Math.ceil((endAt-Date.now())/1000));
+      if(left!==lastLeft){
+        tnum.textContent=fmt(left);
+        if(left>0&&left<=3)try{tone(660,0,0.15,0.35)}catch(e){}
+        if(left===0){
+          stop();tphase.textContent='Время вышло!';
+          try{if(ac&&ac.state==='suspended')ac.resume();tone(880,0,0.35,0.6);tone(880,0.45,0.35,0.6);tone(1175,0.9,0.7,0.6)}catch(e){}
+          try{navigator.vibrate&&navigator.vibrate([300,150,300,150,500])}catch(e){}
+          el.classList.remove('ding');void el.offsetWidth;el.classList.add('ding');
+        }
+        lastLeft=left;
+      }
+    },200);
+  }});
+  document.getElementById('tstop').onclick=function(){stop();tphase.textContent='Нажми кнопку';tnum.textContent=fmt(+btns[0].dataset.sec)};
+}
+
+/* Когда Катя возвращается на страницу — подтянуть галочки с других устройств */
+document.addEventListener('visibilitychange',function(){if(!document.hidden&&data)load(false)});
+load(true);
+</script>
+</body>
+</html>
